@@ -19,15 +19,15 @@ public class Helper {
 	}
 	
 	public static String toHex(int n) {
-		return "0x" + Integer.toHexString(n & 0xFFFFFFFF);
+		return String.format("%08X ", n & 0xFFFFFFFF);
 	}
 
 	public static String toHex(short n) {
-		return "0x" + Integer.toHexString(n & 0xFFFF);
+		return String.format("%04X ", n & 0xFFFF);
 	}
 
 	public static String toHex(byte n) {
-		return "0x" + Integer.toHexString(n & 0xFF);
+		return String.format("%02X ", n & 0xFF);
 	}
 	
 	public static String toHex(byte[] b) {

@@ -72,7 +72,7 @@ public class MainFrame extends JFrame {
 
 	private void request() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<style>*{font-size:12pt;}div{margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#c0c0c0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:consolas;}</style>");
+		sb.append("<style>*{font-size:12pt;}div{margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#c0c0c0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:consolas;color:#606060;}</style>");
 		
 		try {
 			int DEFAULT_PORT = 53;
@@ -80,13 +80,11 @@ public class MainFrame extends JFrame {
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			
 			// send request
-			DNSMessage requestMsg = DNSMessage.createRequest("www.baidu.com");
-			
-			
-			
-			byte[] msgBytes = requestMsg.toBytes();
-			out.writeShort(msgBytes.length);
-			out.write(msgBytes);
+			DNSMessage request = DNSMessage.createRequest("www.baidu.com");
+			byte[] requestBytes = request.toBytes();
+			out.writeShort(requestBytes.length);
+			out.write(requestBytes);
+			appendMessage(sb, request, "¡ú REQUEST MESSAGE");
 			
 			// get response
 			DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -100,11 +98,10 @@ public class MainFrame extends JFrame {
 //			fos.write(respMsg);
 //			fos.close();
 			
-			DNSMessage responseMsg = DNSMessage.read(new SeekableInputStream(in));
 			
+			DNSMessage response = DNSMessage.read(new SeekableInputStream(in));
+			appendMessage(sb, response, "¡û RESPONSE MESSAGE");
 			
-			appendMessage(sb, requestMsg, "¡ú REQUEST MESSAGE");
-			appendMessage(sb, responseMsg, "¡û RESPONSE MESSAGE");
 			
 			socket.close();
 		} catch (UnknownHostException e) {
@@ -122,12 +119,12 @@ public class MainFrame extends JFrame {
 		sb.append("<h1>" + name + "</h1>");
 		
 		sb.append("<table>");
-		sb.append("<tr><td>ID</td><td>" + Helper.toHex(msg.m_id & 0xFFFF) + "</td></tr>");
-		sb.append("<tr><td>Flag</td><td>" + Helper.toHex(msg.m_flag & 0xFFFF) + "</td></tr>");
-		sb.append("<tr><td>NumQuestions</td><td>" + Helper.toHex(msg.m_questions.size()) + "</td></tr>");
-		sb.append("<tr><td>NumAnwsers</td><td>" + Helper.toHex(msg.m_anwsers.size()) + "</td></tr>");
-		sb.append("<tr><td>NumAuthorities</td><td>" + Helper.toHex(msg.m_authorities.size()) + "</td></tr>");
-		sb.append("<tr><td>NumAdditional</td><td>" + Helper.toHex(msg.m_additional.size()) + "</td></tr>");
+		sb.append("<tr><td>ID</td><td><span>" + Helper.toHex(msg.m_id) + "</span></td></tr>");
+		sb.append("<tr><td>Flag</td><td><span>" + Helper.toHex(msg.m_flag) + "</span></td></tr>");
+		sb.append("<tr><td>NumQuestions</td><td><span>" + Helper.toHex((short)msg.m_questions.size()) + "</span></td></tr>");
+		sb.append("<tr><td>NumAnwsers</td><td><span>" + Helper.toHex((short)msg.m_anwsers.size()) + "</span></td></tr>");
+		sb.append("<tr><td>NumAuthorities</td><td><span>" + Helper.toHex((short)msg.m_authorities.size()) + "</span></td></tr>");
+		sb.append("<tr><td>NumAdditional</td><td><span>" + Helper.toHex((short)msg.m_additional.size()) + "</span></td></tr>");
 		sb.append("</table>");
 		
 		appendQuestion(sb, msg);
@@ -151,9 +148,9 @@ public class MainFrame extends JFrame {
 			Question q = msg.m_questions.get(i);
 			
 			sb.append("<tr><td>NAME</td><td>" + q.m_name + "</td></tr>");
-			sb.append("<tr><td>TYPE</td><td>" + q.m_type + "</td><td>" 
+			sb.append("<tr><td>TYPE</td><td><span>" + Helper.toHex(q.m_type) + "</span></td><td>" 
 					+ Question.getTypeString(q.m_type) + "</td></tr>");
-			sb.append("<tr><td>CLASS</td><td>" + q.m_class + "</td><td>" + Question.getClassString(q.m_class)
+			sb.append("<tr><td>CLASS</td><td><span>" + Helper.toHex(q.m_class) + "</span></td><td>" + Question.getClassString(q.m_class)
 					+ "</td></tr>");
 			
 
@@ -175,12 +172,12 @@ public class MainFrame extends JFrame {
 			ResourceRecord rr = section.get(i);
 			
 			sb.append("<tr><td>NAME</td><td>" + rr.m_name + "</td></tr>");
-			sb.append("<tr><td>TYPE</td><td>" + rr.m_type + "</td><td>" + ResourceRecord.getTypeString(rr.m_type)
+			sb.append("<tr><td>TYPE</td><td><span>" + Helper.toHex(rr.m_type) + "</span></td><td>" + ResourceRecord.getTypeString(rr.m_type)
 					+ "</td></tr>");
-			sb.append("<tr><td>CLASS</td><td>" + rr.m_class + "</td><td>"
+			sb.append("<tr><td>CLASS</td><td><span>" + Helper.toHex(rr.m_class) + "</span></td><td>"
 					+ ResourceRecord.getClassString(rr.m_class) + "</td></tr>");
-			sb.append("<tr><td>TTL</td><td>" + Helper.toHex(rr.m_ttl) + "</td></tr>");
-			sb.append("<tr><td>RDLENGTH</td><td>" + Helper.toHex(rr.m_data.length) + "</td></tr>");
+			sb.append("<tr><td>TTL</td><td><span>" + Helper.toHex(rr.m_ttl) + "</span></td></tr>");
+			sb.append("<tr><td>RDLENGTH</td><td><span>" + Helper.toHex(rr.m_data.length) + "</span></td></tr>");
 			sb.append("<tr><td>DATA</td><td><span>" + Helper.toHex(rr.m_data) + "</span></td><td>" + rr.getDataString()
 					+ "</td></tr>");
 

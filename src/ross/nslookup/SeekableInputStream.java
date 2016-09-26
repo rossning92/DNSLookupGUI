@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 /*
  * An InputStream with seek() to seek previous bytes having been read.
- * Especially good for parse compressed domain name string.
+ * Especially good for parsing compressed domain name string.
  */
 public class SeekableInputStream {
 
