@@ -25,12 +25,12 @@ public class DNSMessage {
 	
 	public static short m_nextId;
 	
-	public static DNSMessage create() {
+	public static DNSMessage createRequest(String domainName) {
 		DNSMessage msg = new DNSMessage();
 		
 		msg.m_id = m_nextId++;
 		msg.m_flag = FLAG_OPCODE_QUERY | FLAG_RD | FLAG_RA;
-		msg.m_questions.add(Question.create("www.baidu.com"));
+		msg.m_questions.add(Question.create(domainName));
 		
 		return msg;
 	}
