@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -37,18 +36,15 @@ public class MainFrame extends JFrame {
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
-		
-		
-	    
-	    
 
 	    JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	    
-	    
+	    // domain name
 	    topPanel.add(new JLabel("Host:"));
 	    m_domainField = new JTextField("www.baidu.com");
 	    topPanel.add(m_domainField);
 	    
+	    // DNS server
 	    topPanel.add(new JLabel("DNS Server:"));
 	    m_serverField = new JTextField("8.8.8.8");
 	    topPanel.add(m_serverField);
@@ -73,7 +69,8 @@ public class MainFrame extends JFrame {
 
 	private void request() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<style>*{font-size:12pt;}div{margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#c0c0c0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Courier;color:#606060;}</style>");
+		
+		sb.append("<style>*{font-size:12pt;}div{background-repeat:no-repeat;background-position:100% 20px;margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#e0e0e0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Courier;color:#606060;}</style>");
 		
 		try {
 			int DEFAULT_PORT = 53;
@@ -119,7 +116,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void appendMessage(StringBuilder sb, DNSMessage msg, String name) {
-		sb.append("<div>");
+		sb.append("<div style=\"background-image:url('file:img/envelope.png');\">");
 		sb.append("<h1>" + name + "</h1>");
 		
 		sb.append("<table>");
