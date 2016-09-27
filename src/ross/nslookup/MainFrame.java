@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -23,11 +24,13 @@ import ross.nslookup.datastruct.DNSMessage;
 import ross.nslookup.datastruct.Question;
 import ross.nslookup.datastruct.ResourceRecord;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 	
 	JEditorPane m_webView;
-	
-	
+	JTextField m_domainField;
+	JTextField m_serverField;
+	 
 	public MainFrame() {
 		this.setTitle("DNS Lookup GUI");
 		this.setLayout(new BorderLayout());
@@ -43,14 +46,12 @@ public class MainFrame extends JFrame {
 	    
 	    
 	    topPanel.add(new JLabel("Host:"));
+	    m_domainField = new JTextField("www.baidu.com");
+	    topPanel.add(m_domainField);
 	    
-	    JTextField field1 = new JTextField("www.baidu.com");
-	    topPanel.add(field1);
-	    
-	    topPanel.add(new JLabel("DNS server:"));
-	    
-	    JTextField field2 = new JTextField("8.8.8.8");
-	    topPanel.add(field2);
+	    topPanel.add(new JLabel("DNS Server:"));
+	    m_serverField = new JTextField("8.8.8.8");
+	    topPanel.add(m_serverField);
 
 	    
 	    // request button
@@ -72,15 +73,18 @@ public class MainFrame extends JFrame {
 
 	private void request() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<style>*{font-size:12pt;}div{margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#c0c0c0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:consolas;color:#606060;}</style>");
+		sb.append("<style>*{font-size:12pt;}div{margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#c0c0c0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Courier;color:#606060;}</style>");
 		
 		try {
 			int DEFAULT_PORT = 53;
-			Socket socket = new Socket("8.8.8.8", DEFAULT_PORT);
+			String server = m_serverField.getText();
+			String domain = m_domainField.getText();
+					
+			Socket socket = new Socket(server, DEFAULT_PORT);
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			
 			// send request
-			DNSMessage request = DNSMessage.createRequest("www.baidu.com");
+			DNSMessage request = DNSMessage.createRequest(domain);
 			byte[] requestBytes = request.toBytes();
 			out.writeShort(requestBytes.length);
 			out.write(requestBytes);
@@ -177,7 +181,7 @@ public class MainFrame extends JFrame {
 			sb.append("<tr><td>CLASS</td><td><span>" + Helper.toHex(rr.m_class) + "</span></td><td>"
 					+ ResourceRecord.getClassString(rr.m_class) + "</td></tr>");
 			sb.append("<tr><td>TTL</td><td><span>" + Helper.toHex(rr.m_ttl) + "</span></td></tr>");
-			sb.append("<tr><td>RDLENGTH</td><td><span>" + Helper.toHex(rr.m_data.length) + "</span></td></tr>");
+			sb.append("<tr><td>RDLENGTH</td><td><span>" + Helper.toHex((short)rr.m_data.length) + "</span></td></tr>");
 			sb.append("<tr><td>DATA</td><td><span>" + Helper.toHex(rr.m_data) + "</span></td><td>" + rr.getDataString()
 					+ "</td></tr>");
 

@@ -50,8 +50,10 @@ public class SeekableInputStream {
 	
 	public SeekableInputStream seek(int i) {
 		byte[] bytes = m_byteOut.toByteArray();
-		return new SeekableInputStream(
+		SeekableInputStream bufferedIn = new SeekableInputStream(
 				new ByteArrayInputStream(bytes, i, bytes.length - i));
+		bufferedIn.m_byteOut = this.m_byteOut;
+		return bufferedIn;
 	}
 	
 }

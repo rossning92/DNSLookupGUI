@@ -3,31 +3,34 @@ import java.io.IOException;
 
 public class Helper {
 	public static String readDomainName(SeekableInputStream in) throws IOException {
-		byte n = in.readByte();
-		if ((n & 0xC0) != 0) { // n is a pointer (for compression purpose)
-			int offs = ((n & 0x3F) << 8) | in.readByte();
-			return readDomainName(in.seek(offs));			
-		} else { // n is the length of next label
-			String name = "";
-			do {
+		int n;
+		String name = "";
+		
+		while ((n = in.readByte() & 0xFF) > 0) {
+			if ((n & 0xC0) != 0) { // n is a pointer (for compression purpose)
+				int offs = ((n & 0x3F) << 8) | in.readByte();
+				System.out.println("o: " + offs);
+				return readDomainName(in.seek(offs));
+			} else { // n is the length of next label
 				byte[] str = in.readBytes(n);
 				if ( !name.isEmpty() ) name += ".";
 				name += new String(str, "latin1");
-			} while ((n = in.readByte()) > 0);
-			return name;
+			}
 		}
+		
+		return name;
 	}
 	
 	public static String toHex(int n) {
-		return String.format("%08X ", n & 0xFFFFFFFF);
+		return String.format("%08X", n & 0xFFFFFFFF);
 	}
 
 	public static String toHex(short n) {
-		return String.format("%04X ", n & 0xFFFF);
+		return String.format("%04X", n & 0xFFFF);
 	}
 
 	public static String toHex(byte n) {
-		return String.format("%02X ", n & 0xFF);
+		return String.format("%02X", n & 0xFF);
 	}
 	
 	public static String toHex(byte[] b) {
