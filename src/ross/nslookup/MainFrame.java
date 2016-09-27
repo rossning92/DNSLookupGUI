@@ -39,10 +39,12 @@ public class MainFrame extends JFrame {
 
 	    JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	    
+	    
 	    // domain name
 	    topPanel.add(new JLabel("Host:"));
 	    m_domainField = new JTextField("www.baidu.com");
 	    topPanel.add(m_domainField);
+	    
 	    
 	    // DNS server
 	    topPanel.add(new JLabel("DNS Server:"));
@@ -61,8 +63,10 @@ public class MainFrame extends JFrame {
 	    topPanel.add(requestBtn);
 	    this.add(topPanel, BorderLayout.NORTH);
 	    
+	    
 	    // web view to display result
 		m_webView = new JEditorPane("text/html", "");
+		m_webView.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(m_webView);
 		this.add(scrollPane, BorderLayout.CENTER);		
 	}
