@@ -10,8 +10,8 @@ import ross.nslookup.Helper;
 
 public class Question {
 	public String m_name;
-	public short m_type = ResourceRecord.TYPE_A;
-	public short m_class = ResourceRecord.CLASS_IN;
+	public short m_type = RR.TYPE_A;
+	public short m_class = RR.CLASS_IN;
 	
 	public static Question create(String name) {
 		Question q = new Question();
@@ -59,7 +59,7 @@ public class Question {
 		case 253: return "A request for mailbox-related records (MB, MG or MR)";
 		case 254: return "A request for mail agent RRs (Obsolete - see MX)";
 		case 255: return "A request for all records";
-		default: return ResourceRecord.getTypeString(t);
+		default: return RR.getTypeString(t);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class Question {
 		if (cls == 255) {
 			return "any class";
 		} else {
-			return ResourceRecord.getClassString(cls);
+			return RR.getClassString(cls);
 		}
 	}
 }

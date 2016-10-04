@@ -21,7 +21,8 @@ import javax.swing.JTextField;
 
 import ross.nslookup.datastruct.DNSMessage;
 import ross.nslookup.datastruct.Question;
-import ross.nslookup.datastruct.ResourceRecord;
+import ross.nslookup.datastruct.RDataSoa;
+import ross.nslookup.datastruct.RR;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
@@ -74,7 +75,7 @@ public class MainFrame extends JFrame {
 	private void request() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("<style>*{font-size:12pt;}div{background-repeat:no-repeat;background-position:100% 20px;margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#e0e0e0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Courier;color:#606060;}</style>");
+		sb.append("<style>*{font-size:12pt;}div{background-repeat:no-repeat;background-position:100% 20px;margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#e0e0e0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Consolas;color:#606060;}</style>");
 		
 		try {
 			int DEFAULT_PORT = 53;
@@ -165,7 +166,7 @@ public class MainFrame extends JFrame {
 		sb.append("</div>");
 	}
 
-	private void appendSection(StringBuilder sb, ArrayList<ResourceRecord> section, String name) {
+	private void appendSection(StringBuilder sb, ArrayList<RR> section, String name) {
 		if (section.size() == 0) return;
 		
 		sb.append("<div>");
@@ -174,17 +175,33 @@ public class MainFrame extends JFrame {
 			sb.append("<div>");
 			sb.append("<h1>RR</h1>");
 			sb.append("<table>");
-			ResourceRecord rr = section.get(i);
+			RR rr = section.get(i);
 			
 			sb.append("<tr><td>NAME</td><td>" + rr.m_name + "</td></tr>");
-			sb.append("<tr><td>TYPE</td><td><span>" + Helper.toHex(rr.m_type) + "</span></td><td>" + ResourceRecord.getTypeString(rr.m_type)
+			sb.append("<tr><td>TYPE</td><td><span>" + Helper.toHex(rr.m_type) + "</span></td><td>" + RR.getTypeString(rr.m_type)
 					+ "</td></tr>");
 			sb.append("<tr><td>CLASS</td><td><span>" + Helper.toHex(rr.m_class) + "</span></td><td>"
-					+ ResourceRecord.getClassString(rr.m_class) + "</td></tr>");
+					+ RR.getClassString(rr.m_class) + "</td></tr>");
 			sb.append("<tr><td>TTL</td><td><span>" + Helper.toHex(rr.m_ttl) + "</span></td></tr>");
-			sb.append("<tr><td>RDLENGTH</td><td><span>" + Helper.toHex((short)rr.m_data.length) + "</span></td></tr>");
-			sb.append("<tr><td>DATA</td><td><span>" + Helper.toHex(rr.m_data) + "</span></td><td>" + rr.getDataString()
-					+ "</td></tr>");
+			sb.append("<tr><td>RDLENGTH</td><td><span>" + Helper.toHex((short)rr.m_rdataBytes.length) + "</span></td></tr>");
+			
+			sb.append("<tr><td>DATA</td><td><span>" + Helper.toHex(rr.m_rdataBytes) + "</span></td><td>");
+			if (rr.m_rdata == null) {
+				sb.append(rr.getDataString());
+			} else if (rr.m_rdata.getClass() == RDataSoa.class) {
+				RDataSoa d = (RDataSoa)rr.m_rdata;
+				sb.append("<div><h1>RDATA_SOA</h1>");
+				sb.append("<table>");
+				sb.append("<tr><td>MNAME</td><td>" + d.m_mname + "</td></tr>");
+				sb.append("<tr><td>RNAME</td><td>" + d.m_rname + "</td></tr>");
+				sb.append("<tr><td>SERIAL</td><td><span>" + Helper.toHex(d.m_serial) + "</span></td></tr>");
+				sb.append("<tr><td>REFRESH</td><td><span>" + Helper.toHex(d.m_refresh) + "</span></td></tr>");
+				sb.append("<tr><td>RETRY</td><td><span>" + Helper.toHex(d.m_retry) + "</span></td></tr>");
+				sb.append("<tr><td>EXPIRE</td><td><span>" + Helper.toHex(d.m_expire) + "</span></td></tr>");
+				sb.append("</table>");
+				sb.append("</div>");
+			}
+			sb.append("</td></tr>");
 
 			sb.append("</table>");
 			sb.append("</div>");

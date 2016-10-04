@@ -56,4 +56,7 @@ public class SeekableInputStream {
 		return bufferedIn;
 	}
 	
+	public int curPos() {
+		return m_byteOut.size();
+	}
 }

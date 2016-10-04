@@ -5,7 +5,10 @@ import java.io.IOException;
 import ross.nslookup.Helper;
 import ross.nslookup.SeekableInputStream;
 
-public class ResourceRecord {
+/*
+ * RR stands for ResourceRecord
+ */
+public class RR {
 	public final static short
 			TYPE_A     = 1,
 			TYPE_NS    = 2,
@@ -34,7 +37,8 @@ public class ResourceRecord {
 	public short m_type;
 	public short m_class;
 	public int m_ttl;
-	public byte[] m_data;
+	public byte[] m_rdataBytes;
+	public Object m_rdata;
 
 	public static String getTypeString(short type) {
 		switch (type) {
@@ -71,16 +75,16 @@ public class ResourceRecord {
 	public String getDataString() {
 		if (m_type == TYPE_A) {
 			return "IP Address: " +
-					(m_data[0] & 0xFF) + "." + 
-					(m_data[1] & 0xFF) + "." +
-					(m_data[2] & 0xFF) + "." + 
-					(m_data[3] & 0xFF);
+					(m_rdataBytes[0] & 0xFF) + "." + 
+					(m_rdataBytes[1] & 0xFF) + "." +
+					(m_rdataBytes[2] & 0xFF) + "." + 
+					(m_rdataBytes[3] & 0xFF);
 		}
 		return "";
 	}
 	
-	public static ResourceRecord read(SeekableInputStream in) throws IOException {
-		ResourceRecord rr = new ResourceRecord();
+	public static RR read(SeekableInputStream in) throws IOException {
+		RR rr = new RR();
 
 		rr.m_name = Helper.readDomainName(in);
 		System.out.println("NAME: " + rr.m_name);
@@ -95,9 +99,13 @@ public class ResourceRecord {
 		System.out.println("TTL: " + rr.m_ttl);
 
 		int dataLen = in.readShort();
-		rr.m_data = in.readBytes(dataLen);
-		System.out.println("DATA(" + dataLen + "): " + rr.m_data);
+		rr.m_rdataBytes = in.readBytes(dataLen);
+		System.out.println("DATA(" + dataLen + "): " + rr.m_rdataBytes);
 		System.out.println(rr.getDataString());
+		
+		if (rr.m_type == TYPE_SOA) {
+			rr.m_rdata = RDataSoa.read( in.seek(in.curPos() - dataLen) );
+		}
 
 		return rr;
 	}

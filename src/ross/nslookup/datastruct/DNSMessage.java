@@ -18,9 +18,9 @@ public class DNSMessage {
 	public short m_id;
 	public short m_flag = 0;
 	public ArrayList<Question> m_questions = new ArrayList<Question>();
-	public ArrayList<ResourceRecord> m_anwsers = new ArrayList<ResourceRecord>();
-	public ArrayList<ResourceRecord> m_authorities = new ArrayList<ResourceRecord>();
-	public ArrayList<ResourceRecord> m_additional = new ArrayList<ResourceRecord>();
+	public ArrayList<RR> m_anwsers = new ArrayList<RR>();
+	public ArrayList<RR> m_authorities = new ArrayList<RR>();
+	public ArrayList<RR> m_additional = new ArrayList<RR>();
 	
 	
 	public static short m_nextId;
@@ -58,13 +58,13 @@ public class DNSMessage {
 		    }
 		    
 		    for (int i=0; i<numAnwsers; i++) {
-		    	msg.m_anwsers.add(ResourceRecord.read(in));
+		    	msg.m_anwsers.add(RR.read(in));
 		    }
 		    for (int i=0; i<numAuthorities; i++) {
-		    	msg.m_authorities.add(ResourceRecord.read(in));
+		    	msg.m_authorities.add(RR.read(in));
 		    }
 		    for (int i=0; i<numAdditional; i++) {
-		    	msg.m_additional.add(ResourceRecord.read(in));
+		    	msg.m_additional.add(RR.read(in));
 		    }
 		    
 		    return msg;
