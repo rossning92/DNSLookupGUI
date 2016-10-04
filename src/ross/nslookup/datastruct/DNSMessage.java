@@ -12,8 +12,8 @@ public class DNSMessage {
 	public final static short FLAG_OPCODE_QUERY = 0 << 1;
 	public final static short FLAG_OPCODE_IQUERY = 1 << 1;
 	public final static short FLAG_OPCODE_STATUS = 2 << 1;
-	public final static short FLAG_RD = 1 << 7;
-	public final static short FLAG_RA = 1 << 8;
+	public final static short FLAG_RD = 1 << 8;
+	public final static short FLAG_RA = 1 << 7;
 	
 	public short m_id;
 	public short m_flag = 0;
@@ -29,10 +29,24 @@ public class DNSMessage {
 		DNSMessage msg = new DNSMessage();
 		
 		msg.m_id = m_nextId++;
-		msg.m_flag = FLAG_OPCODE_QUERY | FLAG_RD | FLAG_RA;
+		msg.m_flag = FLAG_OPCODE_QUERY | FLAG_RA;
 		msg.m_questions.add(Question.create(domainName));
 		
 		return msg;
+	}
+	
+	public String getFlagString() {
+		StringBuilder sb = new StringBuilder();
+		if ((m_flag & FLAG_QR) != 0) sb.append("Response; ");
+		if ((m_flag & FLAG_RD) != 0) sb.append("Recursion Desired; ");
+		if ((m_flag & FLAG_RA) != 0) sb.append("Recursion Available; ");
+		
+		if ((m_flag & 0xE) == FLAG_OPCODE_QUERY) sb.append("Standard Query; ");
+		else if ((m_flag & 0xE) == FLAG_OPCODE_IQUERY) sb.append("Inverse Query; ");
+		else if ((m_flag & 0xE) == FLAG_OPCODE_STATUS) sb.append("Server Status; ");
+		
+		
+		return sb.toString();
 	}
 	
 	public static DNSMessage read(SeekableInputStream in) {

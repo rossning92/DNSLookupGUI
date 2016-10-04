@@ -126,7 +126,8 @@ public class MainFrame extends JFrame {
 		
 		sb.append("<table>");
 		sb.append("<tr><td>ID</td><td><span>" + Helper.toHex(msg.m_id) + "</span></td></tr>");
-		sb.append("<tr><td>Flag</td><td><span>" + Helper.toHex(msg.m_flag) + "</span></td></tr>");
+		sb.append("<tr><td>Flag</td><td><span>" + Helper.toHex(msg.m_flag) + "</span></td><td>" + msg.getFlagString()
+				+ "</td></tr>");
 		sb.append("<tr><td>NumQuestions</td><td><span>" + Helper.toHex((short)msg.m_questions.size()) + "</span></td></tr>");
 		sb.append("<tr><td>NumAnwsers</td><td><span>" + Helper.toHex((short)msg.m_anwsers.size()) + "</span></td></tr>");
 		sb.append("<tr><td>NumAuthorities</td><td><span>" + Helper.toHex((short)msg.m_authorities.size()) + "</span></td></tr>");
