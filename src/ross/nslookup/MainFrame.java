@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
 	private void request() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("<style>*{font-size:12pt;}div{background-repeat:no-repeat;background-position:100% 20px;margin:8px;margin-top:4px;margin-bottom:4px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#e0e0e0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Consolas;color:#606060;}</style>");
+		sb.append("<style>*{font-size:12pt;}div{background-repeat:no-repeat;background-position:100% 20px;margin:10px;margin-top:5px;margin-bottom:5px;padding:0px;border:1px solid;}h1{border-bottom:1px solid;margin:1px;font-size:10pt;background-color:#e0e0e0;}td{margin:0;padding:0 4px 0 4px;}span{font-family:Consolas;color:#606060;}</style>");
 		
 		try {
 			int DEFAULT_PORT = 53;

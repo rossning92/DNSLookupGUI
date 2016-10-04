@@ -8,8 +8,8 @@ public class Helper {
 		
 		while ((n = in.readByte() & 0xFF) > 0) {
 			if ((n & 0xC0) != 0) { // n is a pointer (for compression purpose)
-				int offs = ((n & 0x3F) << 8) | in.readByte();
-				System.out.println("o: " + offs);
+				int offs = ((n & 0x3F) << 8) | (in.readByte() & 0xFF);
+				System.out.println("offs: " + offs);
 				return readDomainName(in.seek(offs));
 			} else { // n is the length of next label
 				byte[] str = in.readBytes(n);
